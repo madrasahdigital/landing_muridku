@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muridku: Satu Aplikasi untuk SPP & Informasi Sekolah</title>
+<meta name="description" content="Muridku membantu pesantren dan sekolah menertibkan pembayaran SPP dan komunikasi wali murid dalam satu aplikasi. Tanpa repot, tanpa perlu tim IT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16271d;
+    --green:#1f4d3a;
+    --green-deep:#143026;
+    --green-soft:#2c6149;
+    --brass:#a8762f;
+    --brass-light:#c8a05a;
+    --paper:#f3ede0;
+    --paper-card:#fbf8f1;
+    --paper-line:#e2d8c4;
+    --muted:#5c6b60;
+    --danger:#9a3b2f;
+    --maxw:1080px;
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    font-size:17px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;margin:0}
+  p{margin:0}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .eyebrow{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
+    color:var(--brass);margin:0 0 14px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1.5px;background:var(--brass);display:inline-block}
+
+  /* ---- buttons ---- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:16px;
+    padding:14px 26px;border-radius:999px;border:1.5px solid transparent;
+    cursor:pointer;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+    min-height:50px;
+  }
+  .btn-primary{background:var(--brass);color:#fff;box-shadow:0 6px 18px rgba(168,118,47,.28)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(168,118,47,.36)}
+  .btn-ghost{background:transparent;color:var(--green);border-color:rgba(31,77,58,.3)}
+  .btn-ghost:hover{background:rgba(31,77,58,.06)}
+  .btn-on-green{background:#fff;color:var(--green-deep)}
+  .btn-on-green:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+  .btn-ghost-green{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+  .btn-ghost-green:hover{background:rgba(255,255,255,.1)}
+  :focus-visible{outline:3px solid var(--brass-light);outline-offset:2px}
+
+  /* ---- header ---- */
+  header{position:sticky;top:0;z-index:50;background:rgba(243,237,224,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--paper-line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--green-deep);text-decoration:none}
+  .logo-mark{width:34px;height:34px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .logo-mark svg{width:19px;height:19px}
+  .nav .btn{padding:10px 20px;font-size:15px;min-height:44px}
+  .nav-hide{display:none}
+
+  /* ---- hero ---- */
+  .hero{position:relative;overflow:hidden;padding:54px 0 64px}
+  .hero-grid{display:grid;gap:44px;align-items:center}
+  .hero h1{font-size:40px;margin-bottom:20px}
+  .hero h1 em{font-style:normal;color:var(--green);position:relative}
+  .hero-sub{font-size:18px;color:var(--muted);max-width:30em;margin-bottom:28px}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .microcopy{margin-top:18px;font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
+  .microcopy span{display:inline-flex;align-items:center;gap:6px}
+  .microcopy svg{width:15px;height:15px;color:var(--green-soft);flex-shrink:0}
+  .trust-strip{margin-top:30px;padding-top:22px;border-top:1px solid var(--paper-line);font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+  .trust-strip b{color:var(--green-deep);font-weight:600}
+  .trust-dot{width:4px;height:4px;border-radius:50%;background:var(--brass)}
+
+  /* arch-framed device */
+  .device-stage{position:relative;display:flex;justify-content:center}
+  .arch{
+    position:relative;width:300px;max-width:100%;
+    background:linear-gradient(160deg,var(--green) 0%,var(--green-deep) 100%);
+    border-radius:150px 150px 26px 26px;
+    padding:26px 24px 24px;
+    box-shadow:0 30px 60px rgba(20,48,38,.28);
+  }
+  .arch::after{content:"";position:absolute;inset:9px;border:1.5px solid rgba(200,160,90,.34);border-radius:142px 142px 18px 18px;pointer-events:none}
+  .phone{background:var(--paper-card);border-radius:22px 22px 16px 16px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+  .phone-top{padding:14px 16px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--paper-line)}
+  .phone-top p{font-size:11px;color:var(--muted)}
+  .phone-top .nm{font-size:14px;font-weight:600;color:var(--ink);font-family:'Plus Jakarta Sans'}
+  .av{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+  .sec-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 16px 6px}
+  .kid{padding:10px 14px;border-bottom:1px solid var(--paper-line)}
+  .kid-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+  .kid-h .n{font-size:13px;font-weight:600}
+  .kid-h .s{font-size:11px;color:var(--muted)}
+  .pill{font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px}
+  .pill-ok{background:#e2ede4;color:#246b48}
+  .pill-no{background:#f6e7d6;color:#a8762f}
+  .spp{display:flex;justify-content:space-between;align-items:center;background:var(--paper);border-radius:10px;padding:8px 10px}
+  .spp .l{font-size:10px;color:var(--muted)}
+  .spp .v{font-size:13px;font-weight:600}
+  .mini-btn{font-size:10px;font-weight:600;padding:5px 11px;border-radius:8px;background:var(--brass);color:#fff;border:none}
+  /* floating tag on arch */
+  .float-tag{position:absolute;background:var(--paper-card);border-radius:13px;padding:10px 13px;box-shadow:0 12px 26px rgba(20,48,38,.22);display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--ink)}
+  .float-tag svg{width:17px;height:17px;flex-shrink:0}
+  .float-1{top:30px;left:-18px}
+  .float-2{bottom:46px;right:-14px}
+  .float-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+  /* ---- generic section ---- */
+  section{padding:62px 0}
+  .sec-head{max-width:34em;margin-bottom:38px}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+  .sec-head.center .eyebrow{justify-content:center}
+  .sec-head h2{font-size:31px;margin-bottom:14px}
+  .sec-head p{color:var(--muted);font-size:17px}
+
+  /* problem cards */
+  .panel-paper{background:var(--paper)}
+  .pcards{display:grid;gap:16px}
+  .pcard{background:var(--paper-card);border:1px solid var(--paper-line);border-radius:var(--r);padding:24px}
+  .pcard .ic{width:46px;height:46px;border-radius:12px;background:#f0e6d4;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .pcard .ic svg{width:23px;height:23px;color:var(--brass)}
+  .pcard h3{font-size:19px;margin-bottom:8px}
+  .pcard p{font-size:15px;color:var(--muted)}
+  .lead-q{font-family:'Fraunces',serif;font-size:23px;line-height:1.4;color:var(--green-deep);max-width:24em;margin-bottom:34px;font-weight:500}
+
+  /* agitate green panel */
+  .panel-green{background:linear-gradient(165deg,var(--green) 0%,var(--green-deep) 100%);color:#fff;position:relative;overflow:hidden}
+  .panel-green .eyebrow{color:var(--brass-light)}
+  .panel-green .eyebrow::before{background:var(--brass-light)}
+  .panel-green h2{color:#fff;font-size:31px;margin-bottom:20px;max-width:16em}
+  .panel-green p{color:rgba(255,255,255,.82);font-size:17.5px;max-width:34em;margin-bottom:16px}
+  .panel-green .amanah{font-family:'Fraunces',serif;font-style:italic;font-size:21px;line-height:1.45;color:#fff;border-left:3px solid var(--brass-light);padding-left:20px;margin-top:26px;max-width:30em}
+  .ornament{position:absolute;right:-60px;top:-60px;width:280px;height:280px;opacity:.08;pointer-events:none}
+
+  /* guide */
+  .guide-grid{display:grid;gap:40px;align-items:center}
+  .auth-list{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:2px}
+  .auth-list li{display:flex;gap:14px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--paper-line)}
+  .auth-list li:last-child{border-bottom:none}
+  .auth-list .num{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:#fff;background:var(--green);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .auth-list .num svg{width:15px;height:15px}
+  .auth-list b{font-weight:600;color:var(--ink)}
+  .auth-list span{font-size:15.5px;color:var(--muted)}
+  .auth-list b+span{display:block}
+  .guide-card{background:var(--green);border-radius:var(--r);padding:34px;color:#fff}
+  .guide-card .eyebrow{color:var(--brass-light)}
+  .guide-card .eyebrow::before{background:var(--brass-light)}
+  .guide-card p{font-family:'Fraunces',serif;font-size:21px;line-height:1.45;color:#fff}
+
+  /* before/after */
+  .ba-grid{display:grid;gap:18px}
+  .ba-col{border-radius:var(--r);padding:26px}
+  .ba-before{background:#efe7d8;border:1px solid var(--paper-line)}
+  .ba-after{background:var(--green);color:#fff}
+  .ba-col h3{font-size:18px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .ba-before h3{color:var(--danger)}
+  .ba-after h3{color:#fff}
+  .ba-col ul{list-style:none;padding:0;margin:0;display:grid;gap:13px}
+  .ba-col li{display:flex;gap:11px;align-items:flex-start;font-size:15px}
+  .ba-col li svg{width:18px;height:18px;flex-shrink:0;margin-top:2px}
+  .ba-before li{color:#6a5a44}
+  .ba-before li svg{color:var(--danger)}
+  .ba-after li{color:rgba(255,255,255,.9)}
+  .ba-after li svg{color:var(--brass-light)}
+  .bridge{text-align:center;margin-top:30px;font-family:'Fraunces',serif;font-size:19px;color:var(--green-deep);max-width:30em;margin-left:auto;margin-right:auto;font-style:italic}
+
+  /* plan steps */
+  .steps{display:grid;gap:18px;counter-reset:step}
+  .step{background:var(--paper-card);border:1px solid var(--paper-line);border-radius:var(--r);padding:26px 24px;position:relative}
+  .step .sn{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--brass);line-height:1;margin-bottom:14px}
+  .step h3{font-size:18px;margin-bottom:7px}
+  .step p{font-size:15px;color:var(--muted)}
+  .plan-cta{text-align:center;margin-top:36px}
+
+  /* value stack */
+  .vgroup{margin-bottom:34px}
+  .vgroup:last-child{margin-bottom:0}
+  .vgroup-h{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .vgroup-h .tag{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--green-deep)}
+  .vgroup-h .chip{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--brass);background:#f0e6d4;padding:4px 11px;border-radius:999px}
+  .vlist{display:grid;gap:14px}
+  .vitem{display:flex;gap:14px;align-items:flex-start;background:var(--paper-card);border:1px solid var(--paper-line);border-radius:14px;padding:18px 20px}
+  .vitem .vic{width:38px;height:38px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .vitem .vic svg{width:19px;height:19px;color:#fff}
+  .vitem b{display:block;font-weight:600;font-size:15.5px;margin-bottom:3px}
+  .vitem span{font-size:14.5px;color:var(--muted)}
+
+  /* social proof */
+  .proof-arch{max-width:600px;margin:0 auto;background:var(--paper-card);border:1px solid var(--paper-line);border-radius:120px 120px var(--r) var(--r);padding:46px 34px 34px;text-align:center;position:relative}
+  .proof-arch::before{content:"\201C";font-family:'Fraunces',serif;font-size:80px;color:var(--brass-light);line-height:.6;display:block;margin-bottom:6px}
+  .proof-q{font-family:'Fraunces',serif;font-size:21px;line-height:1.5;color:var(--green-deep);margin-bottom:22px}
+  .proof-by{font-weight:600;font-size:15px}
+  .proof-by span{display:block;color:var(--muted);font-weight:400;font-size:14px;margin-top:2px}
+  .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px;max-width:600px;margin-left:auto;margin-right:auto}
+  .num-c{text-align:center;padding:22px 10px;background:var(--paper-card);border:1px solid var(--paper-line);border-radius:14px}
+  .num-c .big{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--green);line-height:1}
+  .num-c .lab{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+  /* pricing */
+  .tiers{display:grid;gap:16px}
+  .tier{background:var(--paper-card);border:1px solid var(--paper-line);border-radius:var(--r);padding:26px}
+  .tier.feat{border:1.5px solid var(--brass);box-shadow:0 14px 30px rgba(168,118,47,.12)}
+  .tier .tn{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:4px}
+  .tier .feat-tag{font-size:11px;font-weight:600;color:var(--brass);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+  .tier .price{font-size:15px;color:var(--green-deep);font-weight:600;margin-bottom:6px}
+  .tier .cap{font-size:13.5px;color:var(--muted)}
+  .price-note{text-align:center;color:var(--muted);font-size:14.5px;margin-top:22px}
+
+  /* faq */
+  .faq{max-width:760px;margin:0 auto;display:grid;gap:12px}
+  details{background:var(--paper-card);border:1px solid var(--paper-line);border-radius:14px;overflow:hidden}
+  summary{list-style:none;cursor:pointer;padding:20px 22px;font-weight:600;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--green-deep)}
+  summary::-webkit-details-marker{display:none}
+  summary .chev{width:20px;height:20px;flex-shrink:0;transition:transform .2s ease;color:var(--brass)}
+  details[open] summary .chev{transform:rotate(180deg)}
+  .faq-a{padding:0 22px 20px;color:var(--muted);font-size:15.5px}
+
+  /* risk reversal */
+  .guarantees{display:grid;gap:16px}
+  .gtee{background:var(--paper-card);border:1px solid var(--paper-line);border-radius:var(--r);padding:24px;text-align:center}
+  .gtee .gic{width:50px;height:50px;border-radius:50%;background:#e2ede4;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  .gtee .gic svg{width:25px;height:25px;color:var(--green)}
+  .gtee b{display:block;font-size:16.5px;margin-bottom:6px;font-family:'Fraunces',serif;font-weight:600}
+  .gtee span{font-size:14.5px;color:var(--muted)}
+
+  /* final cta */
+  .final{background:linear-gradient(165deg,var(--green) 0%,var(--green-deep) 100%);color:#fff;text-align:center;position:relative;overflow:hidden}
+  .final h2{color:#fff;font-size:33px;margin-bottom:18px;max-width:16em;margin-left:auto;margin-right:auto}
+  .final p{color:rgba(255,255,255,.82);font-size:18px;max-width:32em;margin:0 auto 14px}
+  .final .scarce{font-size:14px;color:var(--brass-light);margin-bottom:30px}
+  .final-cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+  /* footer */
+  footer{background:var(--green-deep);color:rgba(255,255,255,.6);padding:40px 0;font-size:14px}
+  .foot{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
+  .foot .logo{color:#fff;font-size:19px}
+  .foot .logo-mark{background:rgba(255,255,255,.12)}
+  .foot a{color:rgba(255,255,255,.7);text-decoration:none}
+  .foot a:hover{color:#fff}
+
+  /* sticky WA */
+  .wa{position:fixed;right:18px;bottom:18px;z-index:60;background:#1f4d3a;color:#fff;width:auto;padding:13px 18px;border-radius:999px;display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 10px 26px rgba(20,48,38,.4);transition:transform .15s ease}
+  .wa:hover{transform:translateY(-2px)}
+  .wa svg{width:21px;height:21px}
+  .wa span{display:none}
+
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- responsive ---------- */
+  @media(min-width:720px){
+    .pcards{grid-template-columns:repeat(3,1fr)}
+    .ba-grid{grid-template-columns:1fr 1fr}
+    .steps{grid-template-columns:repeat(3,1fr)}
+    .vlist{grid-template-columns:repeat(3,1fr)}
+    .guarantees{grid-template-columns:repeat(3,1fr)}
+    .tiers{grid-template-columns:repeat(3,1fr)}
+    .wa span{display:inline}
+  }
+  @media(min-width:900px){
+    .nav-hide{display:inline-flex}
+    .hero h1{font-size:54px}
+    .hero-grid{grid-template-columns:1.05fr .95fr}
+    .sec-head h2,.panel-green h2{font-size:38px}
+    .final h2{font-size:42px}
+    .guide-grid{grid-template-columns:1fr 1fr}
+    .arch{width:330px}
+    body{font-size:17px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap nav">
+    <a href="#" class="logo">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L3 8l9 5 9-5-9-5z" fill="#c8a05a"/><path d="M6 11v4.5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5V11" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      Muridku
+    </a>
+    <a href="#demo" class="btn btn-primary nav-hide">Jadwalkan Demo Gratis</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <p class="eyebrow">Untuk Pesantren &amp; Sekolah</p>
+      <h1>Kelola SPP dan Kabar Sekolah dalam <em>Satu Aplikasi</em>, Tanpa Repot</h1>
+      <p class="hero-sub">Muridku membantu pesantren dan sekolah menertibkan pembayaran SPP dan komunikasi dengan wali murid. Tanpa kejar-kejaran tagihan, tanpa perlu tim IT.</p>
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-primary">Jadwalkan Demo Gratis</a>
+        <a href="#cara" class="btn btn-ghost">Lihat cara kerjanya ↓</a>
+      </div>
+      <div class="microcopy">
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Gratis dipakai 1 bulan</span>
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Tanpa biaya pemasangan</span>
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Tim kami yang setup</span>
+      </div>
+      <div class="trust-strip">
+        <b>Dipercaya pesantren di jaringan Persatuan Islam</b>
+        <span class="trust-dot"></span>
+        <span>6 tahun di Pesantren Persis 67 Benda</span>
+      </div>
+    </div>
+
+    <div class="device-stage reveal">
+      <div class="arch">
+        <div class="phone" role="img" aria-label="Tampilan aplikasi Muridku menampilkan dua anak dengan status SPP">
+          <div class="phone-top">
+            <div>
+              <p>Assalamu'alaikum,</p>
+              <p class="nm">Bapak Ahmad</p>
+            </div>
+            <div class="av">AH</div>
+          </div>
+          <p class="sec-label">Murid saya</p>
+          <div class="kid">
+            <div class="kid-h">
+              <div><p class="n">Fatimah Az-Zahra</p><p class="s">Persis 67 Benda · Kelas 8A</p></div>
+              <span class="pill pill-ok">Lunas</span>
+            </div>
+            <div class="spp"><div><p class="l">SPP Juni 2026</p><p class="v">Rp 450.000</p></div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#246b48" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="kid" style="border-bottom:none">
+            <div class="kid-h">
+              <div><p class="n">Hasan Mubarok</p><p class="s">SD Islam Al-Hikmah · Kelas 4B</p></div>
+              <span class="pill pill-no">Belum</span>
+            </div>
+            <div class="spp"><div><p class="l">SPP Juni 2026</p><p class="v">Rp 300.000</p></div>
+              <button class="mini-btn">Bayar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="float-tag float-1">
+        <span class="float-ic" style="background:#e2ede4"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#246b48" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        2 anak, 2 sekolah
+      </div>
+      <div class="float-tag float-2">
+        <span class="float-ic" style="background:#f0e6d4"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v8M8 12h8" stroke="#a8762f" stroke-width="2.6" stroke-linecap="round"/></svg></span>
+        Satu login saja
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="panel-paper" id="cara">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Masalahnya</p>
+      <h2>Setiap awal bulan, cerita yang sama terulang.</h2>
+    </div>
+    <p class="lead-q reveal">TU mengirim pesan satu per satu ke setiap wali murid. Sebagian membayar, sebagian lupa, sebagian harus diingatkan berulang kali. Dan ketika pimpinan bertanya "berapa yang belum bayar bulan ini?", tidak ada yang bisa menjawab dengan cepat.</p>
+    <div class="pcards">
+      <div class="pcard reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-3-6.7L21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 3v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Tagihan dikejar manual</h3>
+        <p>Waktu TU habis mengirim pesan satu per satu setiap bulan.</p>
+      </div>
+      <div class="pcard reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16M8 16l3-4 3 2 4-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Tunggakan tak terlacak</h3>
+        <p>Tidak ada rekap cepat siapa yang sudah dan belum bayar.</p>
+      </div>
+      <div class="pcard reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 11l18-5v12L3 13v-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 12v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h3>Informasi tenggelam</h3>
+        <p>Pengumuman penting hilang di antara ratusan pesan grup.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGITATE -->
+<section class="panel-green">
+  <svg class="ornament" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 2l12 24 26 4-19 18 5 26-24-13-24 13 5-26L17 30l26-4z" stroke="#c8a05a" stroke-width="2"/></svg>
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Bila dibiarkan</p>
+      <h2>Dibiarkan terus, beban ini hanya membesar.</h2>
+      <p>Tunggakan yang menumpuk perlahan menggerus kesehatan keuangan lembaga. Guru dan TU yang seharusnya fokus mendidik justru habis waktunya mengurus administrasi. Wali murid yang tidak mendapat informasi tepat waktu mulai kehilangan kepercayaan.</p>
+      <p>Dan sementara itu, sekolah lain di sekitar mulai terlihat lebih tertib dan modern.</p>
+      <p class="amanah">Yang dipertaruhkan bukan sekadar efisiensi, melainkan nama baik lembaga dan amanah ratusan wali murid yang menitipkan anaknya kepada Anda.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDE -->
+<section class="panel-paper">
+  <div class="wrap guide-grid">
+    <div class="reveal">
+      <p class="eyebrow">Siapa kami</p>
+      <h2 style="font-size:31px;margin-bottom:16px">Kami mengerti, karena kami tumbuh dari dunia yang sama.</h2>
+      <ul class="auth-list">
+        <li><span class="num">6</span><span><b>Enam tahun mendampingi Pesantren Persis 67 Benda</b>tanpa putus, dari hari pertama hingga kini.</span></li>
+        <li><span class="num"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L3 8l9 5 9-5-9-5z" fill="#fff"/></svg></span><span><b>Dibangun tim Codepolitan</b>ekosistem pendidikan teknologi dengan 200.000+ alumni.</span></li>
+        <li><span class="num"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Dipercaya di jaringan Persatuan Islam</b>dikembangkan bersama, bukan dipaksakan dari luar.</span></li>
+        <li><span class="num"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Dirancang khusus untuk pesantren &amp; sekolah Indonesia</b>bukan software asing yang dipaksakan.</span></li>
+      </ul>
+    </div>
+    <div class="guide-card reveal">
+      <p class="eyebrow">Empati</p>
+      <p>"Muridku tidak dibangun di menara gading. Ia lahir dari pengalaman nyata mendampingi pesantren, sehingga kami tahu betul rasanya menjaga amanah ratusan wali murid sambil memastikan setiap rupiah tercatat benar."</p>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section class="panel-paper" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Transformasi</p>
+      <h2>Bayangkan pengelolaan sekolah Anda, sebelum dan sesudah.</h2>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-col ba-before reveal">
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Tanpa Muridku</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>TU sibuk mengejar tagihan satu per satu</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Pimpinan tidak tahu angka tunggakan</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Pengumuman tenggelam di grup WhatsApp</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Izin santri dicatat manual, sering terlewat</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Lembaga terlihat ketinggalan</li>
+        </ul>
+      </div>
+      <div class="ba-col ba-after reveal">
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Dengan Muridku</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Tagihan terkirim otomatis ke semua wali</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Rekap tunggakan terlihat dalam sekali buka</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Informasi tersimpan rapi &amp; mudah dicari</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Izin tercatat otomatis &amp; terlacak</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Lembaga terlihat modern &amp; profesional</li>
+        </ul>
+      </div>
+    </div>
+    <p class="bridge reveal">Muridku adalah jembatan dari kiri ke kanan, dan tim kami yang memandu Anda menyeberang.</p>
+  </div>
+</section>
+
+<!-- PLAN -->
+<section class="panel-green">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Caranya mudah</p>
+      <h2 style="color:#fff">Mulai dalam 3 langkah. Sisanya kami yang urus.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="sn">01</div><h3>Hubungi kami</h3><p>Tim datang ke sekolah Anda untuk demo dan pendaftaran.</p></div>
+      <div class="step reveal"><div class="sn">02</div><h3>Kami siapkan semuanya</h3><p>Data santri dan tagihan kami bantu pindahkan. Anda tidak perlu menyentuh hal teknis.</p></div>
+      <div class="step reveal"><div class="sn">03</div><h3>Langsung digunakan</h3><p>Sekolah, guru, dan wali murid mulai memakai Muridku hari itu juga.</p></div>
+    </div>
+    <div class="plan-cta reveal"><a href="#demo" class="btn btn-on-green">Jadwalkan Demo Gratis</a></div>
+  </div>
+</section>
+
+<!-- VALUE STACK -->
+<section class="panel-paper">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Manfaatnya</p>
+      <h2>Satu aplikasi, manfaat untuk semua pihak.</h2>
+    </div>
+
+    <div class="vgroup reveal">
+      <div class="vgroup-h"><span class="tag">Untuk pimpinan &amp; sekolah</span><span class="chip">Pembeli</span></div>
+      <div class="vlist">
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></span><div><b>Tagihan massal sekali klik</b><span>Buat tagihan ratusan santri dalam menit, bukan berhari-hari.</span></div></div>
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>Rekap tunggakan real-time</b><span>Tahu kondisi keuangan lembaga kapan saja, tanpa menunggu laporan.</span></div></div>
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></span><div><b>Pengingat otomatis</b><span>Wali yang belum bayar diingatkan sistem, bukan TU satu per satu.</span></div></div>
+      </div>
+    </div>
+
+    <div class="vgroup reveal">
+      <div class="vgroup-h"><span class="tag">Untuk wali murid</span><span class="chip">Pengguna</span></div>
+      <div class="vlist">
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="#fff" stroke-width="1.8"/><path d="M10 18h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><b>Satu aplikasi untuk semua anak</b><span>Bahkan jika anak bersekolah di tempat berbeda, semua dalam satu layar.</span></div></div>
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><b>Transparansi penuh</b><span>Tagihan dan riwayat pembayaran bisa dilihat kapan saja.</span></div></div>
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#fff" stroke-width="1.8"/><path d="M3 9h18M8 3v4M16 3v4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><b>Selalu terhubung</b><span>Kabar, kalender, dan jadwal sekolah langsung di genggaman.</span></div></div>
+      </div>
+    </div>
+
+    <div class="vgroup reveal">
+      <div class="vgroup-h"><span class="tag">Untuk guru &amp; TU</span><span class="chip">Pengguna</span></div>
+      <div class="vlist">
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></span><div><b>Bebas dari kejar tagihan</b><span>Waktu kembali untuk mendidik, bukan menagih.</span></div></div>
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span><div><b>Bagikan kabar dalam detik</b><span>Posting momen sekolah semudah update status.</span></div></div>
+        <div class="vitem"><span class="vic"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><b>Izin tercatat rapi</b><span>Tidak ada lagi izin yang tercecer atau terlupa.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="panel-paper" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Sudah terbukti</p>
+      <h2>Sudah dipercaya, sudah teruji.</h2>
+    </div>
+    <div class="proof-arch reveal">
+      <p class="proof-q">Sejak pakai Muridku, wali santri tidak perlu lagi WA ustadz hanya untuk tanya tagihan. TU kami bisa fokus ke hal yang lebih penting. Sudah enam tahun, dan kami tidak terbayang kembali ke cara lama.</p>
+      <p class="proof-by">[Nama Pimpinan]<span>Pesantren Persis 67 Benda</span></p>
+    </div>
+    <div class="nums">
+      <div class="num-c reveal"><div class="big">6 thn</div><div class="lab">Pemakaian tanpa putus di pesantren anchor</div></div>
+      <div class="num-c reveal"><div class="big">312</div><div class="lab">Santri dikelola dalam satu sistem</div></div>
+      <div class="num-c reveal"><div class="big">2 mnt</div><div class="lab">Generate tagihan, dari yang dulu seharian</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="panel-green">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Harga</p>
+      <h2 style="color:#fff">Masuk akal untuk setiap ukuran lembaga.</h2>
+    </div>
+    <div class="tiers">
+      <div class="tier reveal"><div class="tn">Starter</div><div class="price">Rp 300 sampai 500rb / bulan</div><div class="cap">Untuk pesantren &amp; sekolah kecil, hingga 200 santri.</div></div>
+      <div class="tier feat reveal"><div class="feat-tag">Paling banyak dipilih</div><div class="tn">Growth</div><div class="price">Rp 800rb sampai 1,5jt / bulan</div><div class="cap">Untuk lembaga menengah, 200 sampai 500 santri.</div></div>
+      <div class="tier reveal"><div class="tn">Pro</div><div class="price">Rp 2,5 sampai 4jt / bulan</div><div class="cap">Untuk lembaga besar, di atas 500 santri.</div></div>
+    </div>
+    <p class="price-note reveal" style="color:rgba(255,255,255,.78)">Tanpa biaya pemasangan. Coba dulu gratis 1 bulan penuh, tanpa komitmen apa pun.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="panel-paper">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Pertanyaan yang sering muncul</p>
+      <h2>Hal yang biasa ditanyakan pimpinan.</h2>
+    </div>
+    <div class="faq">
+      <details class="reveal" open>
+        <summary>Wali murid kami banyak yang gaptek, apakah bisa pakai?<svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="faq-a">Bisa. Login cukup dengan nomor WhatsApp dan kode OTP, tanpa perlu ingat password. Notifikasi tetap dikirim lewat WhatsApp yang sudah biasa mereka pakai setiap hari.</div>
+      </details>
+      <details class="reveal">
+        <summary>Kami sudah pakai grup WhatsApp, untuk apa lagi aplikasi?<svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="faq-a">Grup WhatsApp bagus untuk obrolan, tapi informasi penting mudah tenggelam dan tidak ada rekap tagihan. Muridku menyimpan semuanya rapi dan bisa dicari kapan saja, mulai dari tagihan, kalender, kabar, hingga izin dalam satu tempat.</div>
+      </details>
+      <details class="reveal">
+        <summary>Apakah ribet pindah dari sistem lama?<svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="faq-a">Tidak. Tim kami yang membantu memindahkan data santri Anda. Anda tinggal pakai.</div>
+      </details>
+      <details class="reveal">
+        <summary>Bagaimana keamanan data santri kami?<svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="faq-a">Data disimpan dengan aman dan sepenuhnya tetap milik sekolah Anda. Kami tidak pernah membagikannya ke pihak mana pun.</div>
+      </details>
+      <details class="reveal">
+        <summary>Kalau tidak ada staf yang bisa mengoperasikan?<svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="faq-a">Dashboard dibuat sederhana, dan kami dampingi sampai TU Anda benar-benar lancar. Dukungan via WhatsApp tersedia setiap saat.</div>
+      </details>
+      <details class="reveal">
+        <summary>Lembaga kami kecil, apakah cocok?<svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="faq-a">Justru Muridku dirancang untuk lembaga seperti Anda, yang ingin tertib tanpa harus punya tim IT atau anggaran besar.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- RISK REVERSAL -->
+<section class="panel-paper" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">Tanpa risiko</p>
+      <h2>Tidak ada yang perlu dipertaruhkan untuk mencoba.</h2>
+    </div>
+    <div class="guarantees">
+      <div class="gtee reveal"><div class="gic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21 8 14 2 9.4h7.6L12 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><b>Gratis 1 bulan penuh</b><span>Rasakan manfaatnya dulu, baru putuskan.</span></div>
+      <div class="gtee reveal"><div class="gic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><b>Tanpa biaya pemasangan</b><span>Mulai tanpa beban di awal.</span></div>
+      <div class="gtee reveal"><div class="gic"><svg viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-3-6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M21 4v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><b>Bisa berhenti kapan saja</b><span>Tanpa penalti, tanpa kontrak mengikat.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="demo">
+  <svg class="ornament" viewBox="0 0 100 100" fill="none" aria-hidden="true" style="left:-60px;right:auto;top:auto;bottom:-60px"><path d="M50 2l12 24 26 4-19 18 5 26-24-13-24 13 5-26L17 30l26-4z" stroke="#c8a05a" stroke-width="2"/></svg>
+  <div class="wrap">
+    <div class="reveal">
+      <h2>Saatnya lembaga Anda dikelola dengan lebih tenang.</h2>
+      <p>Bergabunglah dengan pesantren dan sekolah yang sudah menertibkan administrasinya bersama Muridku. Mulai coba gratis hari ini, dan tim kami siap mendampingi dari langkah pertama.</p>
+      <p class="scarce">Kami membatasi jumlah sekolah yang di-onboard tiap bulan agar pendampingan tetap maksimal.</p>
+      <div class="final-cta">
+        <a href="#" class="btn btn-on-green">Jadwalkan Demo Gratis</a>
+        <a href="#" class="btn btn-ghost-green">Konsultasi via WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a href="#" class="logo">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L3 8l9 5 9-5-9-5z" fill="#c8a05a"/><path d="M6 11v4.5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5V11" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      Muridku
+    </a>
+    <div>© 2026 Muridku · Platform SPP &amp; Informasi Sekolah · <a href="#demo">Jadwalkan demo</a></div>
+  </div>
+</footer>
+
+<!-- sticky WhatsApp -->
+<a href="#" class="wa" aria-label="Konsultasi via WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.6-.8-2.7-1.5-3.7-3.3-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.3 5.2 4.6 1.9.8 2.7.9 3.6.8.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4z"/><path d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2z"/></svg>
+  <span>Konsultasi via WhatsApp</span>
+</a>
+
+<script>
+  (function(){
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in')});
+      return;
+    }
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+  })();
+</script>
+</body>
+</html>
